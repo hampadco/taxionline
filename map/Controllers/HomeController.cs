@@ -1,0 +1,202 @@
+﻿using System.Security.AccessControl;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using map.Models;
+using ViewModel;
+using DataLayer.Context;
+using DataLayer.Entites;
+using Kavenegar;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+
+namespace map.Controllers
+{
+    public class HomeController : Controller
+    {
+        private readonly Contextdb _db;
+        public static string mobile;
+        public HomeController(Contextdb db)
+        {
+            _db = db;
+        }
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult intro()
+        {
+            // Menu.pay=Diposit();
+            
+             if (User.Identity.IsAuthenticated)
+            {
+                 HttpContext.Session.SetString ("pay", Diposit().ToString());
+                  return RedirectToAction("mapclient","mapclient");
+            }
+             
+
+            return View();
+        }
+        public IActionResult otp()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                  return RedirectToAction("mapclient","mapclient");
+            }
+
+            return View();
+        }
+
+        public IActionResult mapclient()
+        {
+           
+            return View();
+          
+            
+        }
+
+      public IActionResult otpconfig()
+      {
+            ViewBag.Mobile=mobile;
+          return View();
+      }
+      
+
+        [HttpPost]
+        public IActionResult otpconfig(Vm_User us)
+        {
+           ViewBag.Mobile=mobile;
+            var q=_db.tbl_Users.Where(a =>a.phone==mobile).SingleOrDefault();
+            if (q.token==us.token)
+            {
+                           var claims = new List<Claim> () {
+                            new Claim (ClaimTypes.NameIdentifier,q.phone),
+                            new Claim (ClaimTypes.Name, "")
+                            };
+
+                            var identity = new ClaimsIdentity (claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                            var principal = new ClaimsPrincipal (identity);
+
+                            var properties = new AuthenticationProperties {
+                                ExpiresUtc = DateTime.UtcNow.AddYears(1),
+                                IsPersistent = true
+                            };
+
+                            HttpContext.SignInAsync (principal, properties);
+                           
+
+               return RedirectToAction("mapclient","mapclient");
+            }else
+            {
+                ViewBag.msg="رمز وردی نادرست است";
+                return View();
+            }
+
+
+            return View();
+        }
+        public IActionResult sendtoken(Vm_User us)
+        {
+            Random rnd = new Random();
+            string number = rnd.Next(1000, 9999).ToString();
+            mobile=us.phone;
+            var qcheck = _db.tbl_Users.Where(a => a.phone == us.phone).SingleOrDefault();
+            if (qcheck == null)
+            {
+                Tbl_User user = new Tbl_User()
+                {
+                    phone = us.phone,
+                    token = number,
+                    NameFamily=us.phone,
+                    Adress="آدرس شما ",
+                    photo="9.jpg"
+                };
+                _db.tbl_Users.Add(user);
+                _db.SaveChanges();
+
+                var api = new KavenegarApi("3871353043697339486A70384F544A4A574C74612B51432F4C7A4B305076645457396F5267456F7A5A34383D");
+                api.VerifyLookup(us.phone, number, "taxijo");
+                return RedirectToAction("otpconfig");
+
+            }else
+            {
+                qcheck.token=number;
+                 _db.tbl_Users.Update(qcheck);
+                _db.SaveChanges();
+
+                var api = new KavenegarApi("3871353043697339486A70384F544A4A574C74612B51432F4C7A4B305076645457396F5267456F7A5A34383D");
+                 api.VerifyLookup(us.phone, number, "taxijo");
+                return RedirectToAction("otpconfig");
+
+            }
+
+
+
+
+            return RedirectToAction("otpconfig");
+        }
+
+
+
+
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        //
+        
+
+          public int Diposit()
+        {
+            var user=_db.Tbl_pays.Where(a=>a.Phone==User.Identity.GetId ()).ToList();
+
+            int pay=0;
+            int harvest=0;
+            foreach (var item in user)
+            {
+                if (item.Pay!=0 && item.status==true)
+                {
+                    pay=pay+item.Pay;
+                    
+                }
+
+                if (item.Harvest!=0)
+                {
+                    harvest=harvest+item.Harvest;
+                }
+             
+                
+            }
+            
+
+            int total=pay-harvest;
+            return total;
+        }
+        //exit
+        public IActionResult exit()
+        {
+         HttpContext.SignOutAsync (CookieAuthenticationDefaults.AuthenticationScheme);
+        return RedirectToAction ("intro", "home");
+            
+        }
+        
+        
+    }
+}

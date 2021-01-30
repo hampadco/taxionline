@@ -1,0 +1,50 @@
+﻿<div class="page-content-wrapper">
+      <div class="container">
+        <!-- Checkout Wrapper-->
+        <div class="checkout-wrapper-area py-3">
+          <!-- Choose Payment Method-->
+          <div class="choose-payment-method">
+            @* <h6 class="mb-3 text-center">روش پرداخت را انتخاب کنید</h6> *@
+            <div class="row justify-content-center g-3">
+              <!-- Single Payment Method-->
+              <div class="col-6 col-md-5">
+                <div class="single-payment-method"><a class="credit-card" href="/Admin/home/pay"><i class="lni lni-credit-cards"></i>
+                    <h6> شارژ حساب </h6></a></div>
+              </div>
+              <!-- Single Payment Method-->
+              <div class="col-6 col-md-5">
+                <div class="single-payment-method"><a class="bank" href="/Admin/mapclient/Travel"><i class="lni lni-car-alt"></i>
+                    <h6> سفرهای پیشین </h6></a></div>
+              </div>
+              <!-- Single Payment Method-->
+              <div class="col-6 col-md-5">
+                <div class="single-payment-method"><a class="paypal" href="/Admin/home/driverincome"><i class="lni lni-revenue"></i>
+                    <h6> درامدها </h6></a></div>
+              </div>
+              <!-- Single Payment Method-->
+              <div class="col-6 col-md-5">
+                <div class="single-payment-method"><a class="cash" href="/Admin/traveldriver/CurrentRequests"><i class="lni lni-empty-file"></i>
+                    <h6> درخواست های جاری</h6></a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+    function exitaccept()
+{
+  window.location.href="/Admin/home/privacy";
+}
+</script>
+<script>
+  function b(phone)
+  {
+    
+        window.location.href="/Admin/mapclient/mapclient?phone="+phone;
+    
+  }
+
+
+  
+</script>

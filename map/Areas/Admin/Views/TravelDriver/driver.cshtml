@@ -1,0 +1,86 @@
+<div class="page-content-wrapper">
+    <div class="container">
+        <!-- Notifications Area-->
+        <div class="notification-area pt-3 pb-2">
+            <h6 style="text-align: center;" class="pl-1">رانندگان</h6>
+            <div class="list-group">
+
+                @* <!-- Single Notification--><a class="list-group-item readed d-flex align-items-center"
+                    href="notification-details.html"><span class="noti-icon"><i class="lni lni-dropbox"></i></span>
+                    <div class="noti-info">
+                    <h6 class="mb-0">سفر لغو شده</h6><span style="text-align: left;"> 99/10/10 </span>
+                    </div></a>
+                    <!-- Single Notification--><a class="list-group-item span d-flex align-items-center"
+                    href="notification-details.html"><span class="noti-icon"><i class="lni lni-dropbox"></i></span>
+                    <div class="noti-info">
+                    <h6 class="mb-0">سفر انجام شده</h6><span style="text-align: left;"> 99/10/10 </span>
+                    </div></a>
+                    <!-- Single Notification--><a class="list-group-item d-flex align-items-center"
+                    href="notification-details.html"><span class="noti-icon"><i class="lni lni-dropbox"></i></span>
+                    <div class="noti-info">
+                    <h6 class="mb-0">راننده در دسترس نبود</h6><span style="text-align: left;"> 99/10/10 </span>
+                    </div></a>
+                *@
+@foreach (var item in ViewBag.List)
+{
+    
+    
+
+      
+                <div class="accordian-area-wrapper mt-3">
+                    <a >
+
+                        <!-- Accordian Card-->
+                        <div class="card accordian-card others-card clearfix">
+                            <div class="card-body">
+                                <div class="accordion" id="accordionExample3">
+                                    <!-- Single Accordian-->
+                                    <div class="accordian-header" id="headingFive">
+                                        <button
+                                            class="d-flex align-items-center justify-content-between w-100 collapsed btn"
+                                             ><span><i
+                                                    class="lni lni-alarm"></i> رانندگان </span></button>
+                                            <p style="font-family: iransans; margin-top: 18px;">نام راننده:
+                                                @item.NameFamily
+                                            </p>
+                                            <p style="font-family: iransans; margin-top: 18px;">شماره تماس:
+                                                @item.phone
+                                            </p>
+                                            <p style="font-family: iransans; margin-top: 18px;">نام کاربری:
+                                                @item.Username
+                                            </p>
+                                            <p style="font-family: iransans; margin-top: 18px;">رمز عبور:
+                                                @item.Password
+                                            </p>
+                                            <p style="font-family: iransans; margin-top: 18px;">نوع ماشین:
+                                                @item.type_car
+                                            </p>
+                                            <p style="font-family: iransans; margin-top: 18px;">پلاک:
+                                                @item.pelak
+                                            </p>
+                                            <div class="text-center mt-3">
+                                                @if (@item.state==false)
+                                            {
+                                                <a href="/admin/travelDriver/active/@item.Id"  class="btn btn-success">فعال کردن</a>
+                                            }else
+                                            {
+                                                <a href="/admin/travelDriver/dactive/@item.Id"  class="btn btn-danger"> غیر فعال کردن </a>
+                                            }
+
+                                            </div>
+                                            
+                                            
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+}
+
+            </div>
+        </div>
+    </div>
+</div>
